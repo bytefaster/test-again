@@ -1,3 +1,5 @@
+"use strict";
+
 let a = 10;
 
 function outer() {
