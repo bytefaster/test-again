@@ -1,10 +1,30 @@
 let a = 10;
+
 function outer() {
   let b = 20;
+
   function inner() {
     let c = 30;
-    console.log(a + b + c)
+
+    if (![a, b, c].every((value) => typeof value === "number" && Number.isFinite(value))) {
+      throw new TypeError("outer/inner requires a, b, and c to be finite numbers");
+    }
+
+    console.log(a + b + c);
   }
-  inner()
+
+  try {
+    inner();
+  } catch (error) {
+    // Wrap and rethrow so callers get context instead of a silently lost error.
+    throw new Error(`inner() failed while computing the sum: ${error.message}`, { cause: error });
+  }
 }
-outer()
+
+try {
+  outer();
+} catch (error) {
+  console.error("outer() failed:", error);
+  // Re-throw so the failure propagates instead of being swallowed here.
+  throw error;
+}
